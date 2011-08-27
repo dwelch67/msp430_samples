@@ -1,0 +1,50 @@
+
+This is a collection of simple example programs for the msp430 launchpad.
+
+http://www.ti.com/launchpadwiki
+
+You need to get some documents there.  The LaunchPad users guide and the
+MSP430x2xx Family Users Guide.
+
+A few choices for software tools.
+
+For assembly language only:
+
+1) http://www.mikekohn.net/micro/naken430asm_msp430_assembler.php
+download source and install
+
+2) http://ftp.gnu.org/gnu/binutils/
+As of this writing binutils-2.21.1a is the latest greatest
+
+untar
+
+./configure --target=msp430 --prefix=/path/to/somewhere/
+make
+make install
+add /path/to/somewhere/bin to your PATH.  Or perhaps dont use the
+--prefix configure option
+
+3) mspgcc4 provides binutils.
+
+For assembly and/or C
+
+mspgcc4 used to be newer/better but as of this writing that project
+refers you to mspgcc.
+
+http://mspgcc.sourceforge.net
+
+Nowhere near as easy as mspgcc4 was, instructions are in the patch
+files themselves.  You only need binutils and gcc.
+
+On ubuntu you may need to:
+sudo apt-get install build-essential libgmp-dev libmpfr-dev libmpc-dev
+
+These examples or at least their make files are linux based.  To
+program the msp430 launchpad board, mspdebug works well.
+
+
+http://mspdebug.sourceforge.net
+
+You may want/need to use the no readline option:
+
+make WITHOUT_READLINE=1

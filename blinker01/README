@@ -1,4 +1,65 @@
 
+This is the first of many blink the led examples, increasingly more
+complex.
 
-Simple blink the led example, more information to be written here...
+You will need the documents and tools mentioned in the top level README
+file.
+
+The launchpad users guide, as well as the silkscreen on the board
+shows that there are two program controlled leds, one on port p1.0 and
+one on p1.6.
+
+So that means off to the users guide for the microcontroller itself.
+
+Most every msp430 program you will see starts by turning off the
+watch dog timer.
+
+WDTCTL, address 0x0120, 16 bit starts off as 0x6900.
+
+bit 7 will turn off the WDT, to write/change bit 7 you have
+to write the pattern 0x5A to the upper bits.   All together you
+want to write 0x5A80 to address 0x0120.
+
+Next to the Digital I/O chapter.
+
+There is a PxDIR register, each bit in the register is a bit
+on the port 0 = in, 1 = out.  We want a 1 for bits 0 and 6,
+and it is a good idea to read-modify-write these.
+
+Then PxOUT drives the output high or low.  Same here
+pins 0 and 6, and read-modify-write is a good idea.
+
+The port 1 specific registers are P1OUT 0x21 and P1DIR 0x22.
+
+The program configures port 1.0 and 1.6 as outputs, then turns one
+on and the other off.  runs a counter to burn some time then switches
+the outputs. and delays again.  The delay is long enough to see
+the leds blink.  Uncommenting the lines in the program doubles the
+count down, and you can see the blink rate change when you program
+this into the part.  Being able to change the blink rate demonstrates
+that we are actually programming the device and this blinking wasnt
+just a default program that came with it.
+
+startup.s is the vector table when using the gnu tools
+blinker01.s is the example program
+blinker01a.s is the example program a little more user readable.
+blinker01b.s is the example program using syntax for the naken430asm assembler.
+
+to run one of the binaries after building.
+
+mspdebug rf2500
+
+It should find your board/device  then type
+
+prog blinker01.elf
+
+it will program this into the device, then enter
+
+run
+
+and it will start/run the processor, blinking the leds.  When you ctrl-c
+it will stop, but after that if/when you exit mspdebug, it wil start
+the processor again.
+
+
 
