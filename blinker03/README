@@ -1,0 +1,18 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+There is a direct link from the launchpadwiki site to the datasheets
+for the parts that were provided.  I am using the 2231 part at the
+moment.
+
+Calibration settings applied to use 1MHz clock.
+
+Timer configured to count up from 0x0000 to 0xFFFF then interrupt.
+
+Upon interrupt it toggles the leds.
+
+The datasheet for the specific part G2231, shows the interrupt vector
+table.  TACCR0 CCIFG interrupt is used in this example.
+

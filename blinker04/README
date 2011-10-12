@@ -1,0 +1,13 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+There is a direct link from the launchpadwiki site to the datasheets
+for the parts that were provided.  I am using the 2231 part at the
+moment.
+
+
+
+A combination of blinker02 and blinker03.  Uses an interrupt to toggle
+leds once a second.
