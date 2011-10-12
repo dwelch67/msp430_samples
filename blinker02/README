@@ -1,0 +1,25 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+There is a direct link from the launchpadwiki site to the datasheets
+for the parts that were provided.  I am using the 2231 part at the
+moment.
+
+The RC clock the chip powers up using is pretty irregular, you dont
+want to perform any important timing using it.  There is a section
+of the flash where TI puts calibration data, each individual part is
+calibrated, and if you put the numbers from flash in the clock control
+registers you can get a certain level of accuracy on your clock.  Be
+careful if you are doing your own flash programming, to not erase
+this factory set memory, you will use the calibration forever.  For
+this particular part there is a 1MHZ setting and the addresses are
+0x10FF for CALBC1_1MHZ and 0x10FE for CALDCO_1MZ (8 bit locations).
+
+
+
+
+
+
+
