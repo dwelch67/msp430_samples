@@ -1,0 +1,15 @@
+
+The launchpad wiki describes a connector you can buy for J4.
+
+The part number for the right angle connector is
+mill-max  850-10-006-20-001000
+
+If you remove all of the J3 jumpers disconnecting the host/usb side
+of the launchpad board from the msp430 dip chip, you can then plug in
+a board like the ones you get with the ez430.  In particular this
+subdirectory has to do with the 2012 parts you get in this three pack:
+
+http://www.ti.com/tool/ez430-t2012
+
+Since the msp430 has chip specific programming and register address
+information in the datasheet you will need the 2012 and family datasheet.
