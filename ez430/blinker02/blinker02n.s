@@ -45,9 +45,8 @@ reset:
     mov.b &CALDCO_16MHZ,&DCOCTL
 
     ; make p1.0 and p1.6 outputs
-    bis.b #0x41,&P1DIR
-    bic.b #0x41,&P1OUT
-    bis.b #0x40,&P1OUT
+    bis.b #0x01,&P1DIR
+    bis.b #0x01,&P1OUT
 
     ; 16MHz is 16000000 clocks per second
     ; The timers are 16 bit
@@ -65,7 +64,7 @@ reset:
     mov #0x02D0,&TACTL
 
 loop:
-    xor.b #0x41,&P1OUT
+    xor.b #0x01,&P1OUT
     mov #4,r6
 loop0:
     bit.w #0x0001,&TACCTL0
