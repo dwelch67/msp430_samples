@@ -2,9 +2,8 @@
 .global reset
 reset:
 
-  mov #0x0280,r1
-  mov #1,r14
-  call notmain
+  mov #0x0240,r1
+  call #notmain
   jmp hang
 
 .global hang

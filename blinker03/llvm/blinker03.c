@@ -42,7 +42,7 @@ void notmain ( void )
     TACTL = 0x0250; //clock divide/2
     //TACTL = 0x0210; //clock divide/1
 
-  //  bis_r2(0x0018);
+    bis_r2(0x0018);
     //cpu should actually be off and not enter this loop
     while(1) continue;
 }
