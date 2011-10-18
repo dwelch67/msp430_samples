@@ -2,7 +2,7 @@
 .global reset
 reset:
 
-  mov #0x0240,r1
+  mov #0x0280,r1
   call #notmain
   jmp hang
 
@@ -12,7 +12,7 @@ hang:
 
 .globl intled
 intled:
-    xor.b #0x41,&0x0021
+    call #ccifg_int_handler
     reti
 
 .globl bis_r2

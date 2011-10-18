@@ -47,3 +47,7 @@ void notmain ( void )
     while(1) continue;
 }
 
+void ccifg_int_handler ( void )
+{
+    P1OUT ^= 0x41;
+}
