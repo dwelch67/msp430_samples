@@ -1,5 +1,5 @@
 
-all : blinker01.elf blinker01a.elf
+all : out.hex blinker01.elf blinker01a.elf 
 
 blinker01.elf : memmap startup.o blinker01.o 
 	msp430-ld -T memmap startup.o blinker01.o -o blinker01.elf
@@ -18,6 +18,9 @@ blinker01a.elf : memmap startup.o blinker01a.o
 blinker01a.o : blinker01a.s
 	msp430-as blinker01a.s -o blinker01a.o
 
+
+out.hex : blinker01n.s 
+	naken430asm -o out.hex blinker01n.s
 
 
 startup.o : startup.s
