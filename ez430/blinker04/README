@@ -1,0 +1,8 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+
+A combination of blinker02 and blinker03.  Uses an interrupt to toggle
+leds once a second.

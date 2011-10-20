@@ -1,0 +1,15 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+
+Calibration settings applied to use 1MHz clock.
+
+Timer configured to count up from 0x0000 to 0xFFFF then interrupt.
+
+Upon interrupt it toggles the leds.
+
+The datasheet for the specific part 2012, shows the interrupt vector
+table.  TACCR0 CCIFG interrupt is used in this example.
+
