@@ -7,5 +7,6 @@ and environment.
 
 Similar to the blinker02 example in the top level directory.  This
 example sets the processor clock to the factory calibrated 16Mhz
-setting.  Then programs divisors and the timer so that it can change
-the led once per second.
+setting.  then bit bangs a character out, very crude...
+
+
