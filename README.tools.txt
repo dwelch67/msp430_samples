@@ -133,10 +133,63 @@ This assembler was configured for a target of `msp430'.
 
 4) mspgcc -----------------------------------------------------------
 
-http://mspgcc.sf.net do all the manual work, download the stuff,
-apply patches, build, pray.   mspgcc4 was SO much better than mspgcc
-as a result I am probably going to abandon mspgcc all together and
-take my chances with llvm (msp430 support being experimental).
+Despite my prior comment in this document about taking my chances with
+llvm...well msp430 support for llvm is experimental and not hard to
+break.  mspgcc4 was still SO much better than mspgcc.  I was able
+to cobble together something gcc based from the mspgcc project to use
+C instead of only asm.
 
+Start here
+
+http://mspgcc.sourceforge.net/
+
+download area
+
+get the mspgcc tarball in the mspgcc dir/area
+
+mspgcc-20111205.tar.bz2 is the one I am using right now.
+
+tar xjvf mspgcc-20111205.tar.bz2
+
+Which contains the files we care about:
+
+msp430-gcc-4.6.1-20111205.patch
+msp430-binutils-2.21.1a-20111205.patch
+
+So off to ftp://ftp.gnu.org, I dont need more than a C compiler and
+building libgcc is problematic anyway so even better.  (otherwise
+ you would get the gcc-4.6.1.tar.gz, I get just gcc-core-4.6.1.tar.gz)
+
+(use the filename of the patch to figure out which tarball you need)
+
+wget ftp://ftp.gnu.org/gnu/binutils/binutils-2.21.1a.tar.bz2
+wget ftp://ftp.gnu.org/gnu/gcc/gcc-4.6.1/gcc-core-4.6.1.tar.gz
+
+I am building for and installing in /mspgcc so the binaries will be in
+/mspgcc/bin.  You can just as easily make it /home/myusername/mspgcc or
+whatever you want.  Just be consistent with the --prefix for both
+binutils and gcc.
+
+tar xjvf binutils-2.21.1a.tar.bz2
+cd binutils-2.21.1
+patch -p1 < ../msp430-binutils-2.21.1a-20111205.patch
+./configure --target=msp430 --prefix=/mspgcc
+make
+make install
+PATH=/mspgcc/bin:$PATH
+cd ..
+
+tar xzvf gcc-core-4.6.1.tar.gz
+cd gcc-4.6.1
+patch -p1 < ../msp430-gcc-4.6.1-20111205.patch
+apt-get install libmpfr-dev libgmp3-dev libmpc-dev
+./configure --target=msp430 --prefix=/mspgcc  --disable-libssp --disable-libgcc
+make
+make install
+
+
+Any time you want to use the msp430 binutils or gcc point at the binaries
+
+PATH=/mspgcc/bin:$PATH
 
 
