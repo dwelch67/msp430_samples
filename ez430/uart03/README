@@ -1,0 +1,80 @@
+
+Derived from uart02.  LLVM says that msp430 is experimental and right
+now it is tempermental, not producing working code.  So switching to
+mspgcc.  The mspgcc4 project was so much nicer, all automated and it
+just worked.  Getting mspgcc to work is harder, but I had some success
+supposedly the new Ubuntu has mspgcc as a package, unfortunately the
+new ubuntu user interface as well as the new gnome are unusable, time
+to find a new distro.
+
+Start here
+
+http://mspgcc.sourceforge.net/
+
+download area
+
+get the mspgcc tarball in the mspgcc dir/area
+
+mspgcc-20111205.tar.bz2 is the one I am using right now.
+
+tar xjvf mspgcc-20111205.tar.bz2
+
+Which contains the files we care about:
+
+msp430-gcc-4.6.1-20111205.patch
+msp430-binutils-2.21.1a-20111205.patch
+
+So off to ftp://ftp.gnu.org, I dont need more than a C compiler and
+building libgcc is problematic anyway so even better.  (otherwise
+ you would get the gcc-4.6.1.tar.gz, I get just gcc-core-4.6.1.tar.gz)
+
+(use the filename of the patch to figure out which tarball you need)
+
+wget ftp://ftp.gnu.org/gnu/binutils/binutils-2.21.1a.tar.bz2
+wget ftp://ftp.gnu.org/gnu/gcc/gcc-4.6.1/gcc-core-4.6.1.tar.gz
+
+I am building for and installing in /mspgcc so the binaries will be in
+/mspgcc/bin.  You can just as easily make it /home/myusername/mspgcc or
+whatever you want.  Just be consistent with the --prefix for both
+binutils and gcc.
+
+tar xjvf binutils-2.21.1a.tar.bz2
+cd binutils-2.21.1
+./configure --target=msp430 --prefix=/mspgcc
+make
+make install
+PATH=/mspgcc/bin:$PATH
+cd ..
+
+
+tar xzvf gcc-core-4.6.1.tar.gz
+cd gcc-4.6.1
+patch -p1 < ../msp430-gcc-4.6.1-20111205.patch
+apt-get install libmpfr-dev libgmp3-dev libmpc-dev
+./configure --target=msp430 --prefix=/mspgcc  --disable-libssp --disable-libgcc
+make
+make install
+
+
+Any time you want to use the msp430 binutils or gcc point at the binaries
+
+PATH=/mspgcc/bin:$PATH
+
+
+So this uart03 example is derived from the uart02 example.  uart_putc
+bit bangs the serial port to send characters out. and the main program
+itself has a loop that is watching the input pin (p1.1) for a falling
+edge indicating a start bit.  Then it counts out half a bit cell so that
+in theory it is sampling mid bitcell for all the bits.  Basically how
+a real uart works except they take more samples to try to detect mid
+bit cell state changes and/or triple voting or other reasons.
+
+Similar to the way that uart_putc shifts out the bits when finished
+shifting in bit 0 is the start bit, bits 8:1 are the character and
+bit 9 is the stop bit.  If bit 0 is not a 0 or bit 9 is not a 1 then
+there is a framing error and assume the data is bad and discard.
+
+This code, since it prints out what it found after character comes in
+is not able to handle back to back charaters on the input, this code
+is strictly to demonstrate how to use the timer to sample incoming
+rs323 data.  The reverse of bit banging basically.
