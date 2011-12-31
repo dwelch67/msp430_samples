@@ -2,15 +2,125 @@
 Derived from uart02.  LLVM says that msp430 is experimental and right
 now it is tempermental, not producing working code.  So switching to
 mspgcc.  The mspgcc4 project was so much nicer, all automated and it
-just worked.  Getting mspgcc to work is harder, but I had some success
-supposedly the new Ubuntu has mspgcc as a package, unfortunately the
+just worked.  Getting mspgcc to work is harder, but I had some success.
+Supposedly the new Ubuntu has mspgcc as a package, unfortunately the
 new ubuntu user interface as well as the new gnome are unusable, time
 to find a new distro.
 
 See the top level README.tools.txt for info on getting/building mspgcc
 
+The calibrated 16MHz clock is used here. 16,000,000 / 115,200 = 138.8889
+What this means is if we use the 16MHz clock, we set divisors so that
+the timer gets the 16MHz clock (divide by 1) as its reference.  Then set
+the timer so it counts forever, when it reaches 0xFFFF the next count
+is 0x0000.
 
-So this uart03 example is derived from the uart02 example.  uart_putc
+You may or may not already understand this but with an up counter like
+this, so long as you have not completed a full cycle of the counter
+you can simply subtract the current time stamp from a prior time stamp
+to measure time.  In particular it works even with the timer rolling
+over from 0xFFFF to 0x0000.  Take a 4 bit counter as the math is easier
+to show.   0x8 - 0x5 = 0x3 ticks right?  if this four bit counter rolled
+over from 0xF to 0x0, then counting from say 0xE to 0x3 is 0xF, 0x0, 0x1,
+0x2, 0x3 5 steps.  0x3 - 0xF = 0xFFF..FFF5 if you use a hex calculator
+and that is correct the sign bit beyond bit 4 is extending infinitely,
+but if you mask the math to the size of the timer, 4 bits in this paragraph
+then you get 0x5.  the answer we were looking for.  The msp430 has 16
+bit regsters and a 16 bit alu, so long as you use the same size C variables
+then you dont have to add the extra code to mask, the alu and registers
+clip the result to 16 bits for you and you can simply subtract the current
+time from the prior time to measure a period of time.
+
+It is very important to note that you must insure that you dont roll
+over twice.  For example with our 4 bit counter if we started at 0xE
+and counted 0xF, 0x0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xA,
+0xB, 0xC 0xD, 0xE, 0xF, 0x0 ,0x1, 0x2, 0x3.  And subtracted 0xE from
+0x3 we would get the 0x5 mentioned above, but that is the wrong answer
+the answer is really 16 (0x10) + 0x5 because the counter rolled past
+the starting point once, 16 counts (talking about a four bit counter
+again).  You could use the timers interrupt to catch the rollover but
+that adds code to what you are timing, if what you are timing is code
+then that wont work.  You can use that roll over interrupt to create
+more, say 16 more, bits of counter, then you have to deal with sampling
+both counter fragments at the same time.  Another method is within your
+loop simply checking to see if the timer has rolled over (if this loop
+time stamp is less than the timer count from last loop the timer rolled
+over) saving the overhead the processor and code goes through to perform
+an interrupt.  for timing bits in a bit bang operation, either is fine
+in this case though we only need to count to 138 or 139, well within
+what we can measure with the timer.
+
+Another note, say we had some divisor on the clock, say divide by 8,
+then we would be counting to (16,000,000/8)/115,200 = 17.36111.  And
+that probably would work, the math is not hard to figure out what
+the accuracy would be. (16,000,000/8) / 17 = 117,647
+(117,647-115200)/115,200 = 2%.
+And across 10 bit cells
+((117,647-115200)*10)/115,200 = 21%
+So if we were this perfect/repeatable with our timing and the receiver of
+our bit banged serial data sampled one time in the center of the bit
+cell based on the initial edge of the start bit, this would be accurate
+enough.  Most/many hardware uarts take 16 samples of the bit cell, evenly
+spaced, to make their decisions, this would still be fine.
+
+Now my code is not that accurate, this decision takes a different amount
+of instructions to generate a 1 vs a 0.  Which is faster/slower?  it
+depends on the compiler we cannot tell from the C code.
+
+        if(sa&1) P1OUT|=1; else P1OUT&=(~1);
+        sa>>=1;
+
+This also affects your accuracy, if the code paths to a I/O state change
+to a 1 and to a 0 are the same length in execution time then that helps.
+The rest of the loop messes with your accuracy as well:
+
+        while(1)
+        {
+            now=TAR-then;
+            if(now>TACCR0_VALUE) break;
+        }
+        then+=TACCR0_VALUE;
+    }
+
+You have to account for this as well, where you will see the problems
+is when you are using a slower memory/flash to execute from or you slow
+the cpu clock down.  There is a huge difference between running the cpu
+at 16MHz and dividing the clock by 8 to feed the timer and running the cpu
+at say 2MHz and dividing the clock by 1 to feed the timer.  The timeout
+value is the same but the code execution to wait for that timeout value
+adds many clocks.  Say the worst path at 2MHz was 10 clock cycles to detect
+the timer had reached the 17 count difference, add that 10 clocks to 17
+and you get 27.  If it were the same number of instructions every time
+you might get away with something like that, probably not 10 clocks but
+something like that.  Running at 16mhz, the 10 clocks at 2mhz would
+be more like 1.25 clocks.  So sometimes, worst case you count to 18 instead
+of 17.  Other times you count to 17.  That is probably good enough, you
+can do the math on that as well.
+
+Using a timer in this fashion, subtracting the current time count from
+the prior, your best accuracy is to run the processor as fast as you can
+tolerate (power consumption, flash/memory wait states on the execution
+path, etc) and run the timer as fast as you dare to not roll over the
+count.  For this processor 16MHz with a divide by one provides that.
+
+For transmitting serial you could also set the timer to count out the
+time interval, similar to the blinker examples.  Set the timer to count
+139 ticks, and the code no longer has to do math it only polls the roll
+over bit.  And that works great with this processor.  What doesnt work
+is this code also goes into a loop to decode bytes coming in (hardly
+half duplex, you will lose bytes if you try to deploy something like this
+without doing your system engineering), to decode bytes coming in you
+need to reference sampling of the data bit cells based on the falling
+edge of the start bit and aiming to at a minimum sample the middle of
+the bit cell based on that falling edge.  You cant do this with a clock
+that only counts one bit cell periods.  You might be able to if you set
+that clock to 4x or 8x or 16x or some rate faster than the bit cell,
+which is really nice if you have two timers, one you can set for 1x bit
+cell rate for tx and the other for some multiple of the bit cell rate.
+This chip does not have two timers.  This example uses a math based
+solution, which can translate to measuring time periods, periodic or not.
+
+This uart03 example is derived from the uart02 example.  uart_putc
 bit bangs the serial port to send characters out. and the main program
 itself has a loop that is watching the input pin (p1.1) for a falling
 edge indicating a start bit.  Then it counts out half a bit cell so that
