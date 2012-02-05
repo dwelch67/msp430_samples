@@ -1,0 +1,13 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+
+See the f2112 README for more information on this setup.
+
+This sample program demonstrates using a calibrated clock with a timer
+in polled fashion. it is pretty straight forward to then verify against
+a watch or stopwatch the clock frequencies are what they say they are
+and the divisors are all working no hidden surprises.
+

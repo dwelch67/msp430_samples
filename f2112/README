@@ -1,0 +1,53 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+
+This is an MSP430F2112 which I either bought or sampled directly from
+ti.  Pretty easy through their website.
+
+Then went here and got one of these:
+http://www.proto-advantage.com/store/product_info.php?products_id=2200041
+
+This was my first time trying to solder down an smp part.  And I trashed
+the first one.  I was following Travis Goodspeed's instructions for the
+GoodFET.  What I did wrong was I actually dragged the solder wick across
+the pins as I was sucking up the excess solder, this bent the legs sideways
+over to the next pad, then when I tried to fix it I lifted a pad.  I used
+the other side to practice and then used the other chip and other board
+that I happened to have and was successful.  I used scotch tape instead
+of masking so I could see both sides of the part when aligning it and
+taped the whole thing to the bench so it wouldnt move when soldering.
+I used the solder wick but moved it away from the part parallel with
+the legs.
+
+The dip pins on the back of the board, they give you, if you want them
+lined up so they plug into something you might use that something or
+a spare to keep them lined up when you start.  I am just using jumper
+wires on this one so didnt care and they are not paralell one side is
+a bit crooked.
+
+So anyway the goal here was an mps430 with a uart.  Even better one with
+an internal oscillator so that it could be plugged into and programmed
+by an msp430 launchpad or ez430 I guess.  Using pins 1, 2, 4, 7 you can
+plug into the msp430 launchpad.  Remove the jumpers on the launchpad
+and use jumper wires
+
+http://www.sparkfun.com/products/9194
+
+to connect power (vcc to DVcc), ground (gnd to gnd in the target side
+corner of the board), test to test, and rst to rst.  The test and rst
+lines are also the serial debug lines.
+
+Not sure why yet but mspdebug is having a slight problem with this chip
+or my setup.  I have to manually erase the section before programming
+including the vector table if/when that changes.  I am building for 0xFC00
+at the moment so I use the erase segment 0xFC00 command then prog out.hex
+and then exit to run a new program.
+
+The datasheet also has some issues compared to others.  Normally you
+are told explicitly that the 1MHZ calibration values are at 0x10FF
+and 0x10FE, and so on.  I had to figure that out experimentally and
+0x10FF is the 1Mhz, 0x10FD 8Mhz and then 12 and then 16 as you go down
+in address.
