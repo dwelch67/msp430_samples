@@ -48,12 +48,10 @@ UCA0IRRCTL  equ 0x05F
 IE2         equ 0x001
 IFG2        equ 0x003
 
+P3REN equ 0x10
+P3OUT equ 0x19
 P3DIR equ 0x1A
 P3SEL equ 0x1B
-
-
-
-
 
     org 0xFC00
 
@@ -67,11 +65,10 @@ reset:
     mov.b &CALBC1_16MHZ,&BCSCTL1
     mov.b &CALDCO_16MHZ,&DCOCTL
 
-    ; make p1.0 and p1.6 outputs
-    bis.b #0xFF,&P1DIR
+    bic.b #0x06,&BCSCTL2
 
   mov.b #0x00,&UCA0CTL0
-  mov.b #0x41,&UCA0CTL1
+  mov.b #0xC0,&UCA0CTL1
 
   mov.b #0x08,&UCA0BR0
   mov.b #0x00,&UCA0BR1
@@ -88,26 +85,39 @@ reset:
   mov.b #0x00,&UCA0STAT
   mov.b #0x00,&UCA0ABCTL
   mov.b #0x00,&IE2
-  mov.b #0x40,&UCA0CTL1
+;  mov.b #0x40,&UCA0CTL1
+  bic.b #0x30,&P3REN
+  ;bis.b #0x10,&P3DIR
   bis.b #0x30,&P3SEL
 
 
+
+
+    ;jmp over
+
+txbusy:
+    bit.b #0x01,&UCA0STAT
+    jnz txbusy
+
+    mov.b #0x55,&UCA0TXBUF
+
+txbusyb:
+    bit.b #0x01,&UCA0STAT
+    jnz txbusyb
+
+    mov.b #0x56,&UCA0TXBUF
+
+
+    jmp txbusy
+
+
+over:
 
 
     ; make p1.0 and p1.6 outputs
     bis.b #0xFF,&P1DIR
 
 
-    ; 16MHZ
-    ; SMCLK divisor /8
-    ; timer divisor /8
-    ; 16000000 / 64 = 250000
-    ; 16 bit timer roll over 16 times
-    ; 250000 / (16*65536) = 0.2384...
-    ; invert that and 4.194 seconds.
-    ; the led should change every 4 seconds
-
-    bis.b #0x06,&BCSCTL2
     mov #0x02E0,&TACTL
 
 loop:
@@ -115,7 +125,7 @@ loop:
     bic.b #0xFF,&P1OUT
     mov.b #0x55,&UCA0TXBUF
 
-    mov #16,r9
+    mov #32,r9
 loop0a:
     bit #0x8000,&TAR
     jz loop0a
@@ -130,7 +140,7 @@ loop0b:
     mov.b #0x56,&UCA0TXBUF
 
 
-    mov #16,r9
+    mov #32,r9
 loop1a:
     bit #0x8000,&TAR
     jz loop1a
@@ -155,14 +165,6 @@ loop1b:
 
 
 
-
-
-txbusy:
-    bit #0x01,&UCA0STAT
-    jnz txbusy
-
-    mov.b #0x55,&UCA0TXBUF
-    jmp txbusy
 
 
 

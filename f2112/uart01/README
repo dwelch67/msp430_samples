@@ -1,0 +1,8 @@
+
+See higher level READMEs to find important documentation
+
+The uart appers to be working.  You should see UVUVUVUV on the serial
+port 115200 8N1.
+
+
+
