@@ -1,0 +1,26 @@
+
+You will need the documents and tools mentioned in the top level README
+file.
+
+You also will want the datasheet for the specific part you are using.
+
+See the g2553 README for more information on this setup.
+
+
+
+This sample program demonstrates using an ir (infra red) receiver module
+in particular the one from sparkfun
+
+http://www.sparkfun.com/products/10266
+
+The way these work is that you supply power and ground, 3.3 or whatever
+you are using on your microcontroller, and there is an output pin this
+output is the demodulated IR signal.  You ultimately want to decode
+this signal by measuring the pulses, each IR command has a different
+sequence/encoding.
+
+This example simply demonstrates that it works.  When the receiver
+output changes the msp430 changes its led, so normally the led is off
+(and the input is normally high if nothing going on).
+
+Decoding will be a future example
