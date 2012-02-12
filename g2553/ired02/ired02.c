@@ -126,7 +126,7 @@ void notmain ( void )
 {
     unsigned short sb;
     unsigned short a,b,c;
-  //  unsigned short min, max;
+    //unsigned short min, max;
     unsigned long code;
     //unsigned long lastcode;
 
@@ -151,8 +151,8 @@ void notmain ( void )
 //using this receiver...
 //http://www.sparkfun.com/products/10266
 
-//And decoding what resembles the JVC protocol at least as defined here
-//http://www.sbprojects.com/knowledge/ir/jvc.php
+//And decoding what resembles the NEC protocol at least as defined here
+//http://www.sbprojects.com/knowledge/ir/nec.php
 
 //idle is high, there is a unique/long low start pulse
 //using a scope the pulse looks to be 9.2ms
