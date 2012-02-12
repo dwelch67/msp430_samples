@@ -271,8 +271,8 @@ void notmain ( void )
                 //if(c<min) min=c;
                 //if(c>max) max=c;
             //}
-            if(c<SHORTMIN) continue;
-            if(c>LONGMAX) continue;
+            if(c<SHORTMIN) break;
+            if(c>LONGMAX) break;
             code<<=1;
             if(c<SHORTMAX)
             {
@@ -286,7 +286,7 @@ void notmain ( void )
                 }
                 else
                 {
-                    continue;
+                    break;
                 }
             }
             while(1) if(P1IN&0x10) break;
@@ -294,9 +294,10 @@ void notmain ( void )
             c=b-a; //shortlow
             //if(c<min) min=c;
             //if(c>max) max=c;
-            if(c<LOWMIN) continue;
-            if(c>LOWMAX) continue;
+            if(c<LOWMIN) break;
+            if(c>LOWMAX) break;
         }
+        if(sb<32) continue;
         //lastcode=code;
         P1OUT |= 0x41; //blink led
         hexstrings((code>>16)&0xFFFF);

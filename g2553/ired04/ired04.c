@@ -104,15 +104,24 @@ void hexstrings ( unsigned short d )
     uart_putc(0x20);
 }
 //-------------------------------------------------------------------
+//0x039C 0x04CF 924 1231 midpoint 538us
+
+#define HIMIN 900
+#define HIMAX 1300
+
+// 600us 1200 0x048C 0x059B  1164 1435
+//1200us 2400 0x08FE 0x09D2  2302 2514
+
+#define SHORTMIN 1100
+#define SHORTMAX 1500
+#define LONGMIN 2200
+#define LONGMAX 2600
+//-------------------------------------------------------------------
 void notmain ( void )
 {
-    unsigned short sa,sb;
+    unsigned short sb;
     unsigned short a,b,c;
-    //unsigned short min, max;
-    unsigned long code;
-    //unsigned long lastcode;
-
-    unsigned short data[32];
+    unsigned short code;
 
 
     WDTCTL = 0x5A80;
@@ -133,13 +142,6 @@ void notmain ( void )
 
     TACTL = 0x02E0;
 
-//0x1D7E 0x2540   7550  9536
-
-//max=0;
-//min=0; min--;
-
-    code=0;
-    //lastcode=0;
     while(1)
     {
         while(P1IN&0x10) continue; //to LOW
@@ -147,28 +149,44 @@ void notmain ( void )
         while(1) if(P1IN&0x10) break; //to HIGH
         b=TAR;
         c=b-a;
-        if(c<(8540-1000)) continue;
-        if(c>(8540+1000)) continue;
-        sa=0;
-        data[sa++]=c;
-        for(sb=0;sb<14;sb++)
+        if(c<(4800-480)) continue;
+        if(c>(4800+480)) continue;
+        code=0;
+        for(sb=0;sb<12;sb++)
         {
             while(P1IN&0x10) continue; //to LOW
             a=TAR;
-            data[sa++]=a-b;
+            c=a-b;
+            if(c<HIMIN) break;
+            if(c>HIMAX) break;
+
             while(1) if(P1IN&0x10) break; //to HIGH
             b=TAR;
-            data[sa++]=b-a;
-            if(data[sa-1]>0x2000) break;
-
+            c=b-a;
+            if(c<SHORTMIN) break;
+            if(c>LONGMAX) break;
+            code<<=1;
+            if(c<SHORTMAX)
+            {
+                //code|=0;
+            }
+            else
+            {
+                if(c>LONGMIN)
+                {
+                    code|=1;
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
+        if(sb<12) continue;
 
-        for(sb=0;sb<sa;sb++)
-        {
-            hexstrings(data[sb]);
-        }
-        uart_putc(0x0D);
-        uart_putc(0x0A);
+
+        hexstring(code);
+
     }
 
 }
