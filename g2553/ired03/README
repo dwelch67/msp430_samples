@@ -1,0 +1,25 @@
+
+This one is primarily to record data for one remote, but also can be
+used as a starting point for figuring out things or even as a generic
+logic analyzer/recorder, whatever.
+
+I have this old RCA TV from the 1980s.  It has outlasted most of the
+TVs my family or I have bought since.  Still going strong and still have
+the remote.  From what I remember reading somewhere infra red remotes
+started pretty much the year this TV came out, and the protocol on this
+one is a bit strange.  Preprogrammed, multifunction, universal remotes
+never supported this TV.  So I assume this is some unique, pre-standard,
+protocol.  The fear of losing the remote before losing the TV along
+with the desire to use one remote lead me to build an ir repeater.  I
+have a microcontroller board that receives a popular protocol and
+when for example it receives the 1 button, it has an ir transmitter and
+it blasts out the code, modulated, for the 1 button that the original
+remote used.
+
+Now that I use github and am playing with ir receivers again wanted to
+capture/log some of this data here.  This code also provides a starting
+point for decoding protocols that have a unique start pattern.  Can
+probably use it for the other protocols as well, having a start pattern
+makes it a lot easier to know where you are in the stream and insure
+that you are capturing it from the beginning.
+
