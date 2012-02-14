@@ -125,11 +125,12 @@ void delay_us ( unsigned int us )
     while((TAR-ra)<us) continue;
 }
 //-------------------------------------------------------------------
-#define MISO 0
-#define MOSI 1
-#define SCK  2
-#define CSN  3
-#define CE   4
+#define IRQ  0
+#define MISO 1
+#define MOSI 2
+#define SCK  3
+#define CSN  4
+#define CE   5
 
 //-------------------------------------------------------------------
 void nordic_csn_set( void )
@@ -291,8 +292,6 @@ u32 nordic_read_payload ( void )
     dummy();
     return(data);
 }
-
-
 //-------------------------------------------------------------------
 void nordic_init ( void )
 {
@@ -325,24 +324,20 @@ void notmain ( void )
     uart_init();
     hexstring(0x1234);
 
-
     TACTL = 0x02E0;
-
-
-
 
     // make p1.0 and p1.6 outputs LEDs
     P1DIR |= 0x41;
     P1OUT &= ~0x41;
 
     //disable pullup/down resistor
-    P2REN&=~((1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
+    P2REN&=~((1<<IRQ)|(1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
 
-    P2SEL&=~((1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
-    P2SEL2&=~((1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
+    P2SEL&=~((1<<IRQ)|(1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
+    P2SEL2&=~((1<<IRQ)|(1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
 
-    //make MISO an input
-    P2DIR&=~(1<<MISO);
+    //make MISO and IRQ inputs
+    P2DIR&=~((1<<IRQ)|(1<<MISO));
     //make the others outputs
     P2DIR|=(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE);
 
@@ -381,14 +376,9 @@ void notmain ( void )
         }
     }
 
-
-
-
-
-
     //make them all inputs, dont drive
-    P2DIR&=~((1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
-    P2REN&=~((1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
+    P2DIR&=~((1<<IRQ)|(1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
+    P2REN&=~((1<<IRQ)|(1<<MISO)|(1<<MOSI)|(1<<SCK)|(1<<CSN)|(1<<CE));
 }
 //-------------------------------------------------------------------
 //-------------------------------------------------------------------
