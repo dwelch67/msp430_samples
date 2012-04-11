@@ -1,0 +1,6 @@
+
+This is a C based version of uart01.  http://mspgcc.sf.net or some other
+equivalent toolchain is required.  Using their build instructions I have
+had no problems building binutils and gcc from sources.  I dont bother
+with gdb, etc.
+
