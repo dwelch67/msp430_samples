@@ -36,15 +36,21 @@ http://mspgcc.sourceforge.net
 Nowhere near as easy as mspgcc4 was, instructions are in the patch
 files themselves.  You only need binutils and gcc.
 
-On ubuntu you may need to:
+Newer ubuntu and mint distros include mspgcc simply apt-get them
+sudo apt-get install gcc-msp430 binutils-msp430 msp430mcu
+
+
+For building on ubuntu you may need to:
 sudo apt-get install build-essential libgmp-dev libmpfr-dev libmpc-dev
 
 These examples or at least their make files are linux based.  To
 program the msp430 launchpad board, mspdebug works well.
-
 
 http://mspdebug.sourceforge.net
 
 You may want/need to use the no readline option:
 
 make WITHOUT_READLINE=1
+
+Newer ubuntu and mint distros include mspdebug
+sudo apt-get install mspdebug
