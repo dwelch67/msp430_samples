@@ -1,0 +1,12 @@
+
+These are examples for one of the launchpad boards.
+
+My board does not have EZFET_UARTTXD connected to p3.3 so using the
+TXD jumper doesnt do any good.  So I have to connect a jumper from
+p3.3 to the fet side of the TXD jumper.
+
+uart01 is a 115200 baud example but depending on who is receiving may
+have some errors now and again.
+uart02 is a 9600 baud example less error.
+
+
