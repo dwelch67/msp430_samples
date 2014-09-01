@@ -47,6 +47,7 @@ These examples or at least their make files are linux based.  To
 program the msp430 launchpad board, mspdebug works well.
 
 http://mspdebug.sourceforge.net
+git clone git://git.code.sf.net/p/mspdebug/code
 
 You may want/need to use the no readline option:
 
@@ -54,3 +55,15 @@ make WITHOUT_READLINE=1
 
 Newer ubuntu and mint distros include mspdebug
 sudo apt-get install mspdebug
+
+As of this writing the apt-got version doesnt work for the f5529 (and
+other) launchpad.  to use mspdebug to load the f5529 board then hold
+the bsl button, and press reset.  Or hold the bsl button while plugging
+in power.
+
+mspdebug load-bsl
+prog file.hex
+exit
+
+The original (msp430) launchpad used the rf2500 driver and that is
+available in the apt-got version.
