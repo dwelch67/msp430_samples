@@ -1,0 +1,17 @@
+
+This is a C based version of uart01.  http://mspgcc.sf.net or some other
+equivalent toolchain is required.  Using their build instructions I have
+had no problems building binutils and gcc from sources.  I dont bother
+with gdb, etc.
+
+If available mint and other ubuntu based distros (which is debian based) 
+have a msp430 binutils and gcc package that you can apt-get.  I use those
+where available.
+
+See my build_gcc repo for building llvm/clang from sources.  The optimized
+clang/llvm build appears to work, unoptimized is producing buggy code.  
+Will need to do more research, to isolate this.
+
+
+
+
