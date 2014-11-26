@@ -1,0 +1,15 @@
+
+this is a gps based clock, gps based time is in theory supposed to be
+very accurate.  parses the time out of the data stream, adjusts for
+the time zone, and displays it on the sharp display.
+
+
+    //P1.0 LCD Power Control
+    //P1.1 RXD from gps, 9600 in this example
+    //P1.2 TXD debug out, if enabled same speed as RXD
+    //P1.3 LCD Enable
+    //P1.4 SPI CS
+    //P1.5 SPI CLK
+    //P1.6   led2
+    //p1.7 SPI MOSI
+
